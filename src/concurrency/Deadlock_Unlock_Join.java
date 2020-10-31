@@ -14,7 +14,7 @@ package concurrency;
  */
 
 class A {
-  synchronized  void aoo(B b) {
+  /*synchronized*/   void aoo(B b) {
 		String name = Thread.currentThread().getName();
 		System.out.println(name + " entered A.aoo()");
 
