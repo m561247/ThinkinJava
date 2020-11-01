@@ -2,6 +2,8 @@ package concurrency;
 
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import static net.mindview.util.Print.*;
 class TaskPortion implements Runnable {
@@ -50,9 +52,25 @@ class WaitingTask implements Runnable {
 			print(this + " interrupted");
 		}
 	}
-	
+	public String toString() {
+		return String.format("WaitingTask %1$-3d ", id);
+	}
 }
 
 public class CountDownLatchDemo {
-
+	static final int SIZE = 100;
+	public static void main(String[] args) {
+		ExecutorService exec = Executors.newCachedThreadPool();
+		// All must share a single CountDownLatch object
+		CountDownLatch latch = new CountDownLatch(SIZE);
+		for (int i = 0; i < 10; i++) {
+			exec.execute(new WaitingTask(latch));
+		}
+		for (int i = 0; i < SIZE; i++) {
+			exec.execute(new TaskPortion(latch));
+		}
+		print("Launched all tasks");
+		exec.shutdown(); // Quit when all tasks complete
+		
+	}
 }
