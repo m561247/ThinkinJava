@@ -1,3 +1,5 @@
+package enumerated;
+
 //: enumerated/BigEnumSet.java
 import java.util.*;
 

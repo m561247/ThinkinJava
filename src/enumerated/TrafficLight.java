@@ -1,3 +1,5 @@
+package enumerated;
+
 //: enumerated/TrafficLight.java
 // Enums in switch statements.
 import static net.mindview.util.Print.*;

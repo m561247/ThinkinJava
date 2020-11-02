@@ -1,3 +1,5 @@
+package enumerated;
+
 //: enumerated/EnumClass.java
 // Capabilities of the Enum class
 import static net.mindview.util.Print.*;
