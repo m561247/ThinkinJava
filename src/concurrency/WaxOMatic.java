@@ -75,7 +75,7 @@ public class WaxOMatic {
 		exec.execute(new WaxOff(car));
 		exec.execute(new WaxOn(car));
 		TimeUnit.SECONDS.sleep(5); // Run for a while
-		exec.shutdownNow(); // 呼叫 interrupt() 給所有 exec 執行的執行緒
+		exec.shutdownNow(); // �� interrupt() 蝯行���� exec �銵�銵��
 	}
 	
 	

@@ -1,5 +1,6 @@
 package concurrency;
 
+//: concurrency/Tester.java
 // Framework to test performance of concurrency containers.
 import java.util.concurrent.*;
 import net.mindview.util.*;
@@ -67,17 +68,14 @@ public abstract class Tester<C> {
 			endLatch.countDown();
 		}
 	}
-	
+
 	public static void initMain(String[] args) {
-		if (args.length > 0) {
+		if (args.length > 0)
 			testReps = new Integer(args[0]);
-		}
-		if (args.length > 1) {
+		if (args.length > 1)
 			testCycles = new Integer(args[1]);
-		}
-		if (args.length > 2) {
+		if (args.length > 2)
 			containerSize = new Integer(args[2]);
-		}
 		System.out.printf("%-27s %14s %14s\n", "Type", "Read time", "Write time");
 	}
-}
+} /// :~

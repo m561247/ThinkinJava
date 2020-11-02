@@ -1,4 +1,7 @@
 package concurrency;
+//: concurrency/Fat.java
+
+// Objects that are expensive to create.
 
 public class Fat {
 	private volatile double d; // Prevent optimization
@@ -6,8 +9,8 @@ public class Fat {
 	private final int id = counter++;
 
 	public Fat() {
-		// Expensive, interruptible operation
-		for (int i = 0; i < 10000; i++) {
+		// Expensive, interruptible operation:
+		for (int i = 1; i < 10000; i++) {
 			d += (Math.PI + Math.E) / (double) i;
 		}
 	}
@@ -15,8 +18,8 @@ public class Fat {
 	public void operation() {
 		System.out.println(this);
 	}
-	
+
 	public String toString() {
-		return "Fat id : " + id;
+		return "Fat id: " + id;
 	}
-}
+} /// :~

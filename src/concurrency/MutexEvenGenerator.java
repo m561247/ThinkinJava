@@ -1,24 +1,27 @@
 package concurrency;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+//: concurrency/MutexEvenGenerator.java
+// Preventing thread collisions with mutexes.
+// {RunByHand}
+import java.util.concurrent.locks.*;
 
 public class MutexEvenGenerator extends IntGenerator {
 	private int currentEvenValue = 0;
 	private Lock lock = new ReentrantLock();
-	@Override
+
 	public int next() {
 		lock.lock();
 		try {
 			++currentEvenValue;
 			Thread.yield(); // Cause failure faster
 			++currentEvenValue;
-			return currentEvenValue; // 執行完 finally 後才會 return
+			return currentEvenValue;
 		} finally {
 			lock.unlock();
 		}
 	}
+
 	public static void main(String[] args) {
 		EvenChecker.test(new MutexEvenGenerator());
 	}
-}
+} /// :~

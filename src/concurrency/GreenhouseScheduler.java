@@ -1,7 +1,9 @@
 package concurrency;
 
+//: concurrency/GreenhouseScheduler.java
 // Rewriting innerclasses/GreenhouseController.java
-// to use a ScheduledThreadPoolExecutor
+// to use a ScheduledThreadPoolExecutor.
+// {Args: 5000}
 import java.util.concurrent.*;
 import java.util.*;
 
@@ -22,7 +24,6 @@ public class GreenhouseScheduler {
 
 	public void schedule(Runnable event, long delay) {
 		scheduler.schedule(event, delay, TimeUnit.MILLISECONDS);
-
 	}
 
 	public void repeat(Runnable event, long initialDelay, long period) {
@@ -30,38 +31,29 @@ public class GreenhouseScheduler {
 	}
 
 	class LightOn implements Runnable {
-
-		@Override
 		public void run() {
 			// Put hardware control code here to
-			// physically turn on the light
+			// physically turn on the light.
 			System.out.println("Turning on lights");
 			light = true;
 		}
-
 	}
 
 	class LightOff implements Runnable {
-
-		@Override
 		public void run() {
 			// Put hardware control code here to
 			// physically turn off the light.
-			System.out.println("Turning off the lights");
+			System.out.println("Turning off lights");
 			light = false;
 		}
-
 	}
 
 	class WaterOn implements Runnable {
-
-		@Override
 		public void run() {
 			// Put hardware control code here.
 			System.out.println("Turning greenhouse water on");
 			water = true;
 		}
-
 	}
 
 	class WaterOff implements Runnable {
@@ -109,6 +101,7 @@ public class GreenhouseScheduler {
 		}
 	}
 
+	// New feature: data collection
 	static class DataPoint {
 		final Calendar time;
 		final float temperature;
@@ -124,6 +117,7 @@ public class GreenhouseScheduler {
 			return time.getTime() + String.format(" temperature: %1$.1f humidity: %2$.2f", temperature, humidity);
 		}
 	}
+
 	private Calendar lastTime = Calendar.getInstance();
 	{ // Adjust date to the half hour
 		lastTime.set(Calendar.MINUTE, 30);
@@ -135,26 +129,21 @@ public class GreenhouseScheduler {
 	private int humidityDirection = +1;
 	private Random rand = new Random(47);
 	List<DataPoint> data = Collections.synchronizedList(new ArrayList<DataPoint>());
-	class CollectData implements Runnable {
 
-		@Override
+	class CollectData implements Runnable {
 		public void run() {
-			System.out.println("Collection data");
+			System.out.println("Collecting data");
 			synchronized (GreenhouseScheduler.this) {
 				// Pretend the interval is longer than it is:
 				lastTime.set(Calendar.MINUTE, lastTime.get(Calendar.MINUTE) + 30);
 				// One in 5 chances of reversing the direction:
-				if (rand.nextInt(5) == 4) {
+				if (rand.nextInt(5) == 4)
 					tempDirection = -tempDirection;
-				}
 				// Store previous value:
-				lastTemp = lastTemp + 
-						tempDirection * (1.0f + rand.nextFloat());
-				if (rand.nextInt(5) == 4) {
+				lastTemp = lastTemp + tempDirection * (1.0f + rand.nextFloat());
+				if (rand.nextInt(5) == 4)
 					humidityDirection = -humidityDirection;
-				}
-				lastHumidity = lastHumidity + 
-						humidityDirection * rand.nextFloat();
+				lastHumidity = lastHumidity + humidityDirection * rand.nextFloat();
 				// Calendar must be cloned, otherwise all
 				// DataPoints hold references to the same lastTime.
 				// For a basic object like Calendar, clone() is OK.
@@ -162,6 +151,7 @@ public class GreenhouseScheduler {
 			}
 		}
 	}
+
 	public static void main(String[] args) {
 		GreenhouseScheduler gh = new GreenhouseScheduler();
 		gh.schedule(gh.new Terminate(), 5000);
@@ -175,4 +165,4 @@ public class GreenhouseScheduler {
 		gh.repeat(gh.new ThermostatDay(), 0, 1400);
 		gh.repeat(gh.new CollectData(), 500, 500);
 	}
-}
+} /* (Execute to see output) */// :~

@@ -1,14 +1,19 @@
 package concurrency;
+
+//: concurrency/InterruptingIdiom.java
 // General idiom for interrupting a task.
+// {Args: 1100}
 import java.util.concurrent.*;
 import static net.mindview.util.Print.*;
 
 class NeedsCleanup {
 	private final int id;
+
 	public NeedsCleanup(int ident) {
 		id = ident;
 		print("NeedsCleanup " + id);
 	}
+
 	public void cleanup() {
 		print("Cleaning up " + id);
 	}
@@ -16,8 +21,7 @@ class NeedsCleanup {
 
 class Blocked3 implements Runnable {
 	private volatile double d = 0.0;
-	
-	@Override
+
 	public void run() {
 		try {
 			while (!Thread.interrupted()) {
@@ -34,9 +38,8 @@ class Blocked3 implements Runnable {
 					try {
 						print("Calculating");
 						// A time-consuming, non-blocking operation:
-						for (int i = 0; i < 2500000; i++) {
+						for (int i = 1; i < 2500000; i++)
 							d = d + (Math.PI + Math.E) / d;
-						}
 						print("Finished time-consuming operation");
 					} finally {
 						n2.cleanup();
@@ -53,9 +56,9 @@ class Blocked3 implements Runnable {
 }
 
 public class InterruptingIdiom {
-	public static void main(String[] args) throws NumberFormatException, InterruptedException {
+	public static void main(String[] args) throws Exception {
 		if (args.length != 1) {
-			print("usage: java Interrupting delay-in-mS");
+			print("usage: java InterruptingIdiom delay-in-mS");
 			System.exit(1);
 		}
 		Thread t = new Thread(new Blocked3());
@@ -63,4 +66,8 @@ public class InterruptingIdiom {
 		TimeUnit.MILLISECONDS.sleep(new Integer(args[0]));
 		t.interrupt();
 	}
-}
+} /*
+	 * Output: (Sample) NeedsCleanup 1 Sleeping NeedsCleanup 2 Calculating Finished
+	 * time-consuming operation Cleaning up 2 Cleaning up 1 NeedsCleanup 1 Sleeping
+	 * Cleaning up 1 Exiting via InterruptedException
+	 */// :~

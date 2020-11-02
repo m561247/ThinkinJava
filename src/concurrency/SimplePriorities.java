@@ -1,11 +1,12 @@
 package concurrency;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+//: concurrency/SimplePriorities.java
+// Shows the use of thread priorities.
+import java.util.concurrent.*;
 
 public class SimplePriorities implements Runnable {
 	private int countDown = 5;
-	private volatile double d; // No optimazation
+	private volatile double d; // No optimization
 	private int priority;
 
 	public SimplePriorities(int priority) {
@@ -16,21 +17,18 @@ public class SimplePriorities implements Runnable {
 		return Thread.currentThread() + ": " + countDown;
 	}
 
-	@Override
 	public void run() {
 		Thread.currentThread().setPriority(priority);
 		while (true) {
-			// An expensive, interruptable operation
+			// An expensive, interruptable operation:
 			for (int i = 1; i < 100000; i++) {
 				d += (Math.PI + Math.E) / (double) i;
-				if (i % 1000 == 0) {
+				if (i % 1000 == 0)
 					Thread.yield();
-				}
 			}
 			System.out.println(this);
-			if (--countDown == 0) {
+			if (--countDown == 0)
 				return;
-			}
 		}
 	}
 
@@ -41,4 +39,11 @@ public class SimplePriorities implements Runnable {
 		exec.execute(new SimplePriorities(Thread.MAX_PRIORITY));
 		exec.shutdown();
 	}
-}
+} /*
+	 * Output: (70% match) Thread[pool-1-thread-6,10,main]: 5
+	 * Thread[pool-1-thread-6,10,main]: 4 Thread[pool-1-thread-6,10,main]: 3
+	 * Thread[pool-1-thread-6,10,main]: 2 Thread[pool-1-thread-6,10,main]: 1
+	 * Thread[pool-1-thread-3,1,main]: 5 Thread[pool-1-thread-2,1,main]: 5
+	 * Thread[pool-1-thread-1,1,main]: 5 Thread[pool-1-thread-5,1,main]: 5
+	 * Thread[pool-1-thread-4,1,main]: 5 ...
+	 */// :~

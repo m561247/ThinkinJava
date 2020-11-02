@@ -1,13 +1,18 @@
 package concurrency;
 
+//: concurrency/Joining.java
+// Understanding join().
 import static net.mindview.util.Print.*;
+
 class Sleeper extends Thread {
 	private int duration;
+
 	public Sleeper(String name, int sleepTime) {
 		super(name);
-		this.duration = sleepTime;
+		duration = sleepTime;
 		start();
 	}
+
 	public void run() {
 		try {
 			sleep(duration);
@@ -21,11 +26,13 @@ class Sleeper extends Thread {
 
 class Joiner extends Thread {
 	private Sleeper sleeper;
+
 	public Joiner(String name, Sleeper sleeper) {
 		super(name);
 		this.sleeper = sleeper;
 		start();
 	}
+
 	public void run() {
 		try {
 			sleeper.join();
@@ -42,4 +49,7 @@ public class Joining {
 		Joiner dopey = new Joiner("Dopey", sleepy), doc = new Joiner("Doc", grumpy);
 		grumpy.interrupt();
 	}
-}
+} /*
+	 * Output: Grumpy was interrupted. isInterrupted(): false Doc join completed
+	 * Sleepy has awakened Dopey join completed
+	 */// :~
